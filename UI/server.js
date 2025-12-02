@@ -25,7 +25,14 @@ const PROTOCOL_MESSAGES = {
     HEAD_POSITION: '~M114\r\n',
     TEMP: '~M105\r\n',
     PROGRESS: '~M27\r\n',
-    STATUS: '~M119\r\n'
+    STATUS: '~M119\r\n',
+    // Control commands
+    LED_ON: '~M146 r255 g255 b255\r\n',
+    LED_OFF: '~M146 r0 g0 b0\r\n',
+    PAUSE: '~M25\r\n',
+    RESUME: '~M24\r\n',
+    CANCEL: '~M26\r\n',
+    HOME: '~G28\r\n',
 };
 
 // Regex patterns (converted and extended)
@@ -387,6 +394,79 @@ app.get('/:ip/status', async (req, res) => {
         const sf = infoResult.match(REGEX_PATTERNS.statusFlags());
         if (sf) printerInfo['StatusFlags'] = sf[1];
         res.json(printerInfo);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Control endpoints
+app.post('/:ip/led', async (req, res) => {
+    try {
+        const { ip } = req.params;
+        const { state, r, g, b } = req.body;
+        
+        await sendAndReceive(ip, PROTOCOL_MESSAGES.CONTROL);
+        
+        let command;
+        if (state === 'off') {
+            command = PROTOCOL_MESSAGES.LED_OFF;
+        } else if (typeof r === 'number' && typeof g === 'number' && typeof b === 'number') {
+            // Custom RGB values (0-255)
+            command = `~M146 r${Math.min(255, Math.max(0, r))} g${Math.min(255, Math.max(0, g))} b${Math.min(255, Math.max(0, b))}\r\n`;
+        } else {
+            command = PROTOCOL_MESSAGES.LED_ON;
+        }
+        
+        const result = await sendAndReceive(ip, command);
+        res.json({ success: true, response: result.trim() });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/:ip/pause', async (req, res) => {
+    try {
+        const { ip } = req.params;
+        
+        await sendAndReceive(ip, PROTOCOL_MESSAGES.CONTROL);
+        const result = await sendAndReceive(ip, PROTOCOL_MESSAGES.PAUSE);
+        res.json({ success: true, response: result.trim() });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/:ip/resume', async (req, res) => {
+    try {
+        const { ip } = req.params;
+        
+        await sendAndReceive(ip, PROTOCOL_MESSAGES.CONTROL);
+        const result = await sendAndReceive(ip, PROTOCOL_MESSAGES.RESUME);
+        res.json({ success: true, response: result.trim() });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/:ip/cancel', async (req, res) => {
+    try {
+        const { ip } = req.params;
+        
+        await sendAndReceive(ip, PROTOCOL_MESSAGES.CONTROL);
+        const result = await sendAndReceive(ip, PROTOCOL_MESSAGES.CANCEL);
+        res.json({ success: true, response: result.trim() });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/:ip/home', async (req, res) => {
+    try {
+        const { ip } = req.params;
+        
+        await sendAndReceive(ip, PROTOCOL_MESSAGES.CONTROL);
+        const result = await sendAndReceive(ip, PROTOCOL_MESSAGES.HOME);
+        res.json({ success: true, response: result.trim() });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

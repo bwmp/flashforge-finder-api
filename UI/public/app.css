@@ -529,8 +529,187 @@ header p {
 @keyframes pulse { 0% {opacity:1;} 50% {opacity:.5;} 100% {opacity:1;} }
 .loading { animation: pulse 1.5s infinite; }
 
+/* Control Panel Styles */
+.control-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.control-section {
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+
+.control-section h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.control-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.control-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+.control-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.control-btn.led-on {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.control-btn.led-on:hover {
+  background: #fde68a;
+}
+
+.control-btn.led-off {
+  background: var(--panel);
+  border-color: var(--line-strong);
+  color: var(--muted);
+}
+
+.control-btn.led-off:hover {
+  background: var(--bg);
+}
+
+.control-btn.led-custom {
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+.control-btn.led-custom:hover {
+  background: linear-gradient(135deg, #9333ea, #4f46e5);
+}
+
+.control-btn.pause {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.control-btn.pause:hover {
+  background: #fde68a;
+}
+
+.control-btn.resume {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.control-btn.resume:hover {
+  background: #a7f3d0;
+}
+
+.control-btn.cancel {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #7f1d1d;
+}
+
+.control-btn.cancel:hover {
+  background: #fecaca;
+}
+
+.control-btn.home {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.control-btn.home:hover {
+  background: #bfdbfe;
+}
+
+.led-color-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.led-color-picker label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.led-color-picker input[type="color"] {
+  width: 40px;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--panel);
+}
+
+.led-color-picker input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.led-color-picker input[type="color"]::-webkit-color-swatch {
+  border-radius: 4px;
+  border: none;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
 ::-webkit-scrollbar-thumb { background: #cfd2d6; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #b9bdc2; }
+
+/* Responsive control panel */
+@media (max-width: 768px) {
+  .control-buttons {
+    flex-direction: column;
+  }
+  
+  .control-btn {
+    width: 100%;
+  }
+  
+  .led-color-picker {
+    flex-wrap: wrap;
+  }
+}

@@ -174,6 +174,57 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Control Panel Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-gamepad"></i> Control Panel</h2>
+                </div>
+                <div class="card-content">
+                    <div class="control-grid">
+                        <div class="control-section">
+                            <h3>LED Control</h3>
+                            <div class="control-buttons">
+                                <button class="control-btn led-on" id="led-on-btn" title="Turn LED On (White)">
+                                    <i class="fas fa-lightbulb"></i> LED On
+                                </button>
+                                <button class="control-btn led-off" id="led-off-btn" title="Turn LED Off">
+                                    <i class="far fa-lightbulb"></i> LED Off
+                                </button>
+                            </div>
+                            <div class="led-color-picker">
+                                <label>Custom Color:</label>
+                                <input type="color" id="led-color" value="#ffffff">
+                                <button class="control-btn led-custom" id="led-custom-btn" title="Set Custom LED Color">
+                                    <i class="fas fa-palette"></i> Apply
+                                </button>
+                            </div>
+                        </div>
+                        <div class="control-section">
+                            <h3>Print Control</h3>
+                            <div class="control-buttons">
+                                <button class="control-btn pause" id="pause-btn" title="Pause Print">
+                                    <i class="fas fa-pause"></i> Pause
+                                </button>
+                                <button class="control-btn resume" id="resume-btn" title="Resume Print">
+                                    <i class="fas fa-play"></i> Resume
+                                </button>
+                                <button class="control-btn cancel" id="cancel-btn" title="Cancel Print">
+                                    <i class="fas fa-stop"></i> Cancel
+                                </button>
+                            </div>
+                        </div>
+                        <div class="control-section">
+                            <h3>Movement</h3>
+                            <div class="control-buttons">
+                                <button class="control-btn home" id="home-btn" title="Home All Axes">
+                                    <i class="fas fa-home"></i> Home
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="auto-refresh-controls">

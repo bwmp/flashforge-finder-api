@@ -72,6 +72,25 @@ class FlashForgeFinder {
                 this.setThemePreference(next);
             });
         }
+
+        // Control buttons
+        document.getElementById('led-on-btn')?.addEventListener('click', () => this.sendControlCommand('led', { state: 'on' }));
+        document.getElementById('led-off-btn')?.addEventListener('click', () => this.sendControlCommand('led', { state: 'off' }));
+        document.getElementById('led-custom-btn')?.addEventListener('click', () => {
+            const color = document.getElementById('led-color').value;
+            const r = parseInt(color.substr(1, 2), 16);
+            const g = parseInt(color.substr(3, 2), 16);
+            const b = parseInt(color.substr(5, 2), 16);
+            this.sendControlCommand('led', { r, g, b });
+        });
+        document.getElementById('pause-btn')?.addEventListener('click', () => this.sendControlCommand('pause'));
+        document.getElementById('resume-btn')?.addEventListener('click', () => this.sendControlCommand('resume'));
+        document.getElementById('cancel-btn')?.addEventListener('click', () => {
+            if (confirm('Are you sure you want to cancel the current print?')) {
+                this.sendControlCommand('cancel');
+            }
+        });
+        document.getElementById('home-btn')?.addEventListener('click', () => this.sendControlCommand('home'));
     }
 
     // Theme handling
@@ -517,6 +536,55 @@ class FlashForgeFinder {
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    async sendControlCommand(command, body = {}) {
+        if (!this.isConnected) {
+            this.showNotification('Please connect to a printer first', 'error');
+            return;
+        }
+
+        const btn = document.querySelector(`#${command}-btn, #led-on-btn, #led-off-btn, #led-custom-btn`);
+        const originalContent = btn?.innerHTML;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        try {
+            const response = await fetch(`/${this.printerIP}/${command}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                throw new Error(data.error || `HTTP ${response.status}`);
+            }
+
+            const commandNames = {
+                'led': 'LED',
+                'pause': 'Pause',
+                'resume': 'Resume',
+                'cancel': 'Cancel',
+                'home': 'Home'
+            };
+            this.showNotification(`${commandNames[command] || command} command sent successfully`, 'success');
+
+            // Refresh status after control command
+            setTimeout(() => this.refreshData('status'), 500);
+
+        } catch (error) {
+            console.error(`Control command ${command} failed:`, error);
+            this.showNotification(`Failed to send ${command}: ${error.message}`, 'error');
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }
+        }
     }
 
     showNotification(message, type = 'info') {
